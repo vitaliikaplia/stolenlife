@@ -37,8 +37,6 @@ class StarterSite extends Site {
         $twig->addFunction( new \Twig\TwigFunction('get_option', 'get_option'));
         $twig->addFunction( new \Twig\TwigFunction('wp_editor', 'wp_editor'));
         $twig->addFunction( new \Twig\TwigFunction('checked', 'checked'));
-        $twig->addFunction( new \Twig\TwigFunction('get_user_ip', 'get_user_ip'));
-        $twig->addFunction( new \Twig\TwigFunction('get_session_info', 'get_session_info'));
         return $twig;
     }
 }
