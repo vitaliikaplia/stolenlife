@@ -1,0 +1,361 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+{% set exhibitions = exhibitions|default([
+    {"id":1,"date":"February 2024","location":"The Forge Gallery, London, UK","href":"https://www.instagram.com/reel/C37bVDmoKWt/?igsh=cGlzbGloM2I4dGVl"},
+    {"id":2,"date":"February 2024","location":"Oekraiense Club, Zaandam, Netherlands","href":"https://www.instagram.com/reel/C4KjiJFNYJi/?igsh=djdha25icm15bW5o"},
+    {"id":3,"date":"March 2024","location":"The Holy Art Gallery, London, UK","href":""},
+    {"id":4,"date":"June 2024","location":"The KUMF Gallery, Toronto, Canada","href":"https://www.instagram.com/p/DDHbaiPg6hO/?igsh=a2U3bG0xZDFxaWxy"},
+    {"id":5,"date":"July 2024","location":"Bydunok Kino, Saksaganskogo, 6, Kyiv, Ukraine","href":""},
+    {"id":6,"date":"February 2025","location":"Rasom Haarlem, Netherlands","href":"https://www.instagram.com/reel/DGlOeXQyaId/?igsh=MTJvN2lsd3hocWtlag%3D%3D"},
+    {"id":7,"date":"March 2025","location":"Xpon-Art Gallery Hamburg, Germany","href":"https://www.instagram.com/p/DHeZRpJsQYf/?igsh=OGthN3hybDgzdXJr"},
+    {"id":8,"date":"April 2025","location":"All Ukrainian Fest& Charity Event, Haarlem, Netherlands","href":""},
+    {"id":9,"date":"May 2025","location":"Belvedere Assen","href":"https://www.instagram.com/p/DJOXXcdogJe/?img_index=1&igsh=MWZlOWQzdGdpa3VmMA=="},
+    {"id":10,"date":"September 2025","location":"PH21 Gallery, Budapest, Hungary","href":""},
+]) %}
+
+{% set pictures = pictures|default([
+    {
+        id:1,
+        title:'Fallen Grandeur',
+        content:'<span>Amidst decay of grandeur—</span><span>Mansion ruins whisper,</span><span>Beauty fragile in war&#39;s shadow.</span>',
+        location:'<span>Moshchun, Kyiv region.</span><span>metal, 90x60</span>',
+        limited:'Limited edition for print: 5 copies each. We can print on metal as originally created, on plastic or paper.',
+        src:site.theme.uri ~ '/assets/img/canvas/canvas-1.webp?ver=' ~ assets
+    },
+    {
+        id:2,
+        title:'Mother and Child. Gaze of Hope',
+        content:'<span> In ruins, a mother holds close—</span><span> Baby&#39;s gaze is beaming;</span><span>Young oak shoot.</span>',
+        location:'<span>Moshchun, Kyiv region.</span><span>metal, 90x60</span>',
+        limited:'Limited edition for print: 5 copies each. We can print on metal as originally created, on plastic or paper.',
+        src:site.theme.uri ~ '/assets/img/canvas/canvas-2.webp?ver=' ~ assets
+    },
+    {
+        id:3,
+        title:'His Only Companion&quot;',
+        content:'<span>Little man and big dog,</span><span> Through silent remnants of home—</span><span>His only companion</span>',
+        location:'<span>Kyiinka, Chernihiv region.</span><span>metal, 90x60</span>',
+        limited:'Limited edition for print: 5 copies each. We can print on metal as originally created, on plastic or paper.',
+        src:site.theme.uri ~ '/assets/img/canvas/canvas-3.webp?ver=' ~ assets
+    },
+    {
+        id:4,
+        title:'Inked Memories',
+        content:'<span>Amidst fallen walls,</span><span>Ink tells of lost yesterdays—</span><span>Will tomorrow be painted?</span>',
+        location:'<span>Kyiinka, Chernihiv region.</span><span>metal, 90x60</span>',
+        limited:'Limited edition for print: 5 copies each. We can print on metal as originally created, on plastic or paper.',
+        src:site.theme.uri ~ '/assets/img/canvas/canvas-4.webp?ver=' ~ assets
+    },
+    {
+        id:5,
+        title:'Hostomel`s Last Stand',
+        content:'<span>Once a father, now a warrior —</span><span>Amid ruins, a silent roar;</span><span>Spirit unbroken.</span>',
+        location:'<span>Hostomel, Kyiv region.</span><span>metal, 90x60</span>',
+        limited:'Limited edition for print: 5 copies each. We can print on metal as originally created, on plastic or paper.',
+        src:site.theme.uri ~ '/assets/img/canvas/canvas-5.webp?ver=' ~ assets
+    },
+    {
+        id:6,
+        title:'Enduring Together',
+        content:'<span>44 years their hands cling,</span><span>Among ruins, love&#39;s roots deepen—</span><span>Silence watches on.</span>',
+        location:'<span>Hostomel, Kyiv region.</span><span>metal, 90x60</span>',
+        limited:'Limited edition for print: 5 copies each. We can print on metal as originally created, on plastic or paper.',
+        src:site.theme.uri ~ '/assets/img/canvas/canvas-6.webp?ver=' ~ assets
+    },
+    {
+        id:7,
+        title:'Farewell to Childhood',
+        content:'<span>Shattered room bears witness—</span><span>A young woman&#39;s gaze falls,</span><span>Childhood&#39;s echo fade</span>',
+        location:'<span>Kyiinka, Chernihiv region.</span><span>metal, 90x60</span>',
+        limited:'Limited edition for print: 5 copies each. We can print on metal as originally created, on plastic or paper.',
+        src:site.theme.uri ~ '/assets/img/canvas/canvas-7.webp?ver=' ~ assets
+    }
+]) %}
+
+<section class="block-wrapper hero-wrapper">
+    <div class="block hero">
+        <h1 class="hero-title">
+            <span class="title-left animated left">Stolen</span>
+            <span class="title-right animated right">Life</span>
+        </h1>
+        <figure class="canvas hero-canvas stripe-deco target gallery-item" data-id="6" title="Enduring Together">
+            <img src="{{ site.theme.uri ~ '/assets/img/canvas/canvas-6.webp?ver=' ~ assets }}" alt="canvas-one">
+            <div class="custom-preloader" id="preloader">
+                <div class="circle">
+                    <div class="loading-count">0</div>
+                    <svg class="progress-ring" width="160" height="160">
+                        <circle class="bg" r="70" cx="70" cy="70"></circle>
+                        <circle class="progress" r="70" cx="70" cy="70"></circle>
+                    </svg>
+                </div>
+                <span class="loading-text">This content can be sensitive, and it is intended for people over 18 y.o.</span>
+            </div>
+        </figure>
+        <button class="custom-button gallery-button gallery-item">see gallery</button>
+    </div>
+</section>
+
+<section class="block-wrapper about-wrapper">
+    <div class="block about">
+        <figure class="canvas grid-1 target gallery-item" data-id="2" title="Mother and Child. Gaze of Hope">
+            <img src="{{ site.theme.uri ~ '/assets/img/canvas/canvas-2.webp?ver=' ~ assets }}" alt="canvas-two">
+        </figure>
+        <article class="about-article grid-2 ">
+            <h2 class="title animated left">Our Mission</h2>
+            <p>This project has a mission not only to offer to look at the war from a different perspective, to ignite an emotion, thought, and a dialogue, but also to change the attitude of the naked body as a powerful instrument of the expression of senses and ideas, destigmatizing and desexualizing it.</p>
+            <p>We also wanted to show the strength of our heroes, that beside loss, grief, and despair, there could be love, hope, unity, resilience and courage, that despite all, they stand tall.</p>
+            <p>The art is blended with poetry in Hokku style, written by Darina Dorogan, inviting visitors to better feel and witness the stories of the heroes.</p>
+        </article>
+        <figure class="canvas grid-3 target gallery-item" data-id="4" title="Inked Memories">
+            <img src="{{ site.theme.uri ~ '/assets/img/canvas/canvas-4.webp?ver=' ~ assets }}" alt="canvas-three">
+        </figure>
+        <article class="about-article grid-4">
+            <h2 class="title animated right">About Project</h2>
+            <p>"Stolen Life" is a unique and poignant documentary art photo project that shows the consequences of the full-scale invasion of Russia on the civilians, common people of Ukraine.</p>
+            <p class="accent-text">
+                <span>War is a great equalizer.</span>
+                <span>What is left when everything is lost?</span>
+            </p>
+            <p>The heroes are standing in front of their ruined houses, naked, like newborns, looking into the unknown. There's people of different age, social status, and gender, but now they're facing the same adversity. In fact, we think that this project goes beyond Ukraine as we're having more wars and war conflicts around the world...</p>
+        </article>
+    </div>
+</section>
+
+<section class="block-wrapper more-wrapper">
+    <div class="block more">
+        <h2 class="more-title">
+            <span class="left animated left">Do you want</span>
+            <a class="custom-button big" id="catalog-button" href="/Stolen Life Catalogue 2.1.pdf" download="stolen-life-catalog.pdf">Download catalog</a>
+            <span class="right animated right">to see more?</span>
+        </h2>
+    </div>
+</section>
+
+<section class="block-wrapper location-wrapper">
+    <div class="block location">
+        <h4 class="title animated left">Where did we film?</h4>
+        <div class="location-map">
+            <figure class="canvas target gallery-item" data-id="7" title="Farewell to Childhood">
+                <img src="{{ site.theme.uri ~ '/assets/img/canvas/canvas-7.webp?ver=' ~ assets }}" alt="canvas-four">
+            </figure>
+            <figure class="map">
+                <img src="assets/img/location/map.png" alt="map">
+            </figure>
+        </div>
+    </div>
+</section>
+
+<section class="block-wrapper authors-wrapper">
+    <div class="block authors">
+        <div class="author-container daryna">
+            <figure class="avatar">
+                <img src="{{ site.theme.uri ~ '/assets/img/authors/daryna-dorohan.png?ver=' ~ assets }}" alt="Darina Dorohan">
+                <figcaption>
+                    <button class="arrow next">
+                        <svg width="15" height="15">
+                            <use href="{{ site.theme.uri ~ '/assets/img/svg/sprite.svg?ver=' ~ assets }}#arrow"></use>
+                        </svg>
+                    </button>
+                    <span class="title">Authors</span>
+                </figcaption>
+            </figure>
+            <article>
+                <h3 class="name">Daryna Dorogan</h3>
+                <span class="role">Author and producer of the idea, curator of Stolen Life</span>
+                <p>Darina is a Ukrainian art producer, actress, registered volunteer, and published writer. Her filmography includes dozens of roles in movies and TV series. She has experience in the art field promoting creative projects. She debuted as a producer in the short film This Is My Bench (2024)</p>
+                <p>Darina also is a multidisciplinary artist working with stories of people transcending harsh realities and struggle, reshaping pain and resilience into the beauty of art, fostering connection, empathy, and change across borders.</p>
+                <div class="nav">
+                    <svg width="25" height="25">
+                        <use href="{{ site.theme.uri ~ '/assets/img/svg/sprite.svg?ver=' ~ assets }}#instagram"></use>
+                    </svg>
+                    <a href="https://www.instagram.com/d_zorya" target="_blank">@d_zorya</a>
+                </div>
+            </article>
+        </div>
+
+        <div class="author-container oleksandr">
+            <figure class="avatar">
+                <img src="{{ site.theme.uri ~ '/assets/img/authors/oleksandr-zinevich.png?ver=' ~ assets }}" alt="Oleksandr Zinevych">
+                <figcaption>
+                    <span class="title">Authors</span>
+                    <button class="arrow prev">
+                        <svg width="15" height="15">
+                            <use href="{{ site.theme.uri ~ '/assets/img/svg/sprite.svg?ver=' ~ assets }}#arrow"></use>
+                        </svg>
+                    </button>
+                </figcaption>
+            </figure>
+            <article>
+                <h3 class="name">Oleksandr Zinevych</h3>
+                <span class="role">Photographer and Operator, Volunteer</span>
+                <p>Oleksandr is a professional photographer and cinematographer with over a decade of experience in crafting unique visual narratives. Specializing in portrait photography since 2013, Oleksandr captures the depth of human emotion and the subtleties of character in his work.</p>
+                <p>Oleksandr also has a significant experience as a director of photography in film production.</p>
+                <div class="nav">
+                    <svg width="25" height="25">
+                        <use href="{{ site.theme.uri ~ '/assets/img/svg/sprite.svg?ver=' ~ assets }}#instagram"></use>
+                    </svg>
+                    <a href="https://www.instagram.com/zinevi4foto" target="_blank">@zinevi4foto</a>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="block-wrapper charity-wrapper">
+    <div class="block charity">
+        <figure class="canvas grid-1 target gallery-item" data-id="1" title="Fallen Grandeur">
+            <img src="{{ site.theme.uri ~ '/assets/img/canvas/canvas-1.webp?ver=' ~ assets }}" alt="canvas-five">
+        </figure>
+        <article class="article grid-2">
+            <h4 class="title animated right">Charity</h4>
+            <p>Stolen Life has a significant charitable history. At nearly each of our openings, we have raised funds for our friends who are fighting for Ukraine. Now we're raising money to help cover car repair for the unit of drone systems.</p>
+            <p>Darina Dorogan is a registered volunteer in Ukraine.</p>
+            <a class="custom-button big" href="https://send.monobank.ua/jar/3PjKTxyLqV" target="_blank">Donate</a>
+        </article>
+        <figure class="canvas grid-3 target gallery-item" data-id="3" title="His Only Companion">
+            <img src="{{ site.theme.uri ~ '/assets/img/canvas/canvas-3.webp?ver=' ~ assets }}" alt="canvas-six">
+        </figure>
+    </div>
+    <div class="decor-bottom"></div>
+</section>
+
+<section class="block-wrapper exhibitions-wrapper">
+    <div class="block exhibitions">
+        <h4 class="title animated left">Past Exhibitions</h4>
+        <div class="animated list">
+            {% for exhibition in exhibitions %}
+                <a class="exhibition-link" href="{{ exhibition.href }}">
+                    <span>{{ exhibition.date }}</span>
+                    <span>{{ exhibition.location }}</span>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="block-wrapper contact-us-wrapper">
+    <div class="block contact-us">
+        <h4 class="title">
+            <span class="animated left">Do you want </span>
+            <span class="animated right">to contact us?</span>
+        </h4>
+        <p>We invite you for collaborations:</p>
+        <p>Galleries, Art spaces, Charity organizations, Embassies,</p>
+        <p>Art and photo festivals, Exhibitions, Artists</p>
+        <a href="mailto:darina.dorogan@gmail.com" class="custom-button" target="_blank">contact us</a>
+    </div>
+</section>
+
+<section class="block-wrapper instagram-wrapper">
+    <div class="block instagram">
+        <a class="instagram-link target animated left" href="https://www.instagram.com/stolenlife_project/" target="_blank">Instagram</a>
+        <div class="photo-container">
+            <a class="photo" href="https://www.instagram.com/p/DDHbaiPg6hO/?igsh=a2U3bG0xZDFxaWxy" target="_blank">
+                <div class="subscribe">
+                    <span class="icon"></span>
+                    <h5 class="title">Stolen Life Project</h5>
+                    <span class="location">Kyiv, Ukraine</span>
+                </div>
+                <img src="{{ site.theme.uri ~ '/assets/img/photos/photo-one.png?ver=' ~ assets }}" alt="photo-one">
+            </a>
+            <a class="photo" href="https://www.instagram.com/p/DEmcj1wAEtO/?igsh=MWo1ZW14eWxib3cycg==" target="_blank">
+                <div class="subscribe">
+                    <span class="icon"></span>
+                    <h5 class="title">Stolen Life Project</h5>
+                    <span class="location">Kyiv, Ukraine</span>
+                </div>
+                <img src="{{ site.theme.uri ~ '/assets/img/photos/photo-two.png?ver=' ~ assets }}" alt="photo-two">
+            </a>
+            <a class="photo" href="https://www.instagram.com/stolenlife_project/" target="_blank">
+                <div class="subscribe">
+                    <span class="icon"></span>
+                    <h5 class="title">Stolen Life Project</h5>
+                    <span class="location">Kyiv, Ukraine</span>
+                </div>
+                <img src="{{ site.theme.uri ~ '/assets/img/photos/photo-three.png?ver=' ~ assets }}" alt="photo-three">
+            </a>
+            <a class="photo" href="https://www.instagram.com/p/DEmcj1wAEtO/?igsh=MWo1ZW14eWxib3cycg==" target="_blank">
+                <div class="subscribe">
+                    <span class="icon"></span>
+                    <h5 class="title">Stolen Life Project</h5>
+                    <span class="location">Kyiv, Ukraine</span>
+                </div>
+                <img src="{{ site.theme.uri ~ '/assets/img/photos/photo-four.png?ver=' ~ assets }}" alt="photo-four">
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="block-wrapper contact-wrapper">
+    <div class="block contact">
+        <h4 class="title">Contacts</h4>
+        <div class="content">
+            <div class="about">
+                <h5 class="name">Darina Dorogan</h5>
+                <span>Author, curator</span>
+            </div>
+            <div class="links">
+                <a href="mailto:darina.dorogan@gmail.com" class="mail">darina.dorogan@gmail.com</a>
+                <a href="tel:+380936931615" class="phone">+380936931615</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="block-wrapper gallery-wrapper">
+    <div class="block gallery">
+        <button class="close close-gallery">
+            <svg width="18" height="18">
+                <use href="{{ site.theme.uri ~ '/assets/img/svg/sprite.svg?ver=' ~ assets }}#close"></use>
+            </svg>
+        </button>
+
+        <div class="swiper gallery-swiper">
+            <div class="swiper-wrapper">
+                {% for picture in pictures %}
+                    <div
+                            class="swiper-slide slide"
+                            data-id="{{ picture.id }}"
+                            data-title="{{ picture.title|e('html_attr') }}"
+                            data-content="{{ picture.content|e('html_attr') }}"
+                            data-location="{{ picture.location|e('html_attr') }}"
+                            data-limited="{{ picture.limited|e('html_attr') }}"
+                    >
+                        <img src="{{ picture.src }}" alt="picture-{{ picture.id }}">
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="swiper-button-prev" aria-label="Previous"></div>
+            <div class="swiper-button-next" aria-label="Next"></div>
+        </div>
+
+        <aside class="gallery-caption" aria-live="polite">
+            <h4 class="gc-title"></h4>
+            <article class="gc-desc"></article>
+            <div class="gc-meta">
+                <div class="gc-location"></div>
+                <div class="gc-limited"></div>
+            </div>
+        </aside>
+    </div>
+</section>
+
+<footer class="block-wrapper footer-wrapper">
+    <div class="block footer">
+        <h6 class="title">
+            <span>Stolen Life © 2025,</span>
+            <span>All rights reserved</span>
+        </h6>
+        <div class="links">
+            <span>Design by <a href="https://www.behance.net/olesia_koshkina" target="_blank">Olesia Koshkina</a></span>
+            <span>Developed by <a href="https://vitaliikaplia.com/" target="_blank">Vitalii Kaplia</a></span>
+        </div>
+    </div>
+</footer>
+
+<div class="custom-cursor"></div>
+
+{% endblock %}
