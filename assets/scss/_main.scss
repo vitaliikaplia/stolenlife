@@ -18,7 +18,7 @@ body{
     }
 }
 
-.no-scroll{
+.no-scroll {
     overflow: hidden;
     padding-right: 30px;
     @media (max-width: 960px) {
@@ -2092,6 +2092,7 @@ main {
     pointer-events: none;
     transition: opacity .35s ease;
     z-index: 150;
+    overflow-y: auto;
 }
 .nav-overlay.is-open {
     opacity: 1;
