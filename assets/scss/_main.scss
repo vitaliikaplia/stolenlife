@@ -80,16 +80,6 @@ body{
                 opacity: 1 !important;
                 filter: blur(0) !important;
             }
-
-            &:before,
-            &:after{
-                opacity:1;
-                transform: rotate(34deg) scaleX(1);
-
-                @media (max-width:960px){
-                    transform: rotate(30deg) scaleX(1);
-                }
-            }
         }
     }
 }
@@ -356,53 +346,47 @@ main {
                 z-index: 1; /* щоб смуга була під фото */
             }
 
-            &:after,
             &:before{
                 content:"";
+                display: block;
                 position:absolute;
                 height:3px;
                 background: var(--accent-color-tertiary); /* #F32D2D */
                 border-radius:2px;
                 opacity:0;
                 transform-origin:left center;
-                transform: rotate(34deg) scaleX(0); /* старт: згорнуто */
+                transform: rotate(-45deg) scaleX(0); /* старт: згорнуто */
                 z-index:0;           /* під фото */
                 pointer-events:none;
                 transition:
                     transform .75s cubic-bezier(.2,.7,0,.99),
                     opacity   .25s ease;
                 transition-delay:.35s;
-                width: clamp(140px, 18vw, 360px); /* адаптивна довжина */
-
-                @media (max-width:960px){
-                    height:2px; width: clamp(120px, 28vw, 220px);
-
-                }
-            }
-
-            &:before{
+                width: 220%; /* адаптивна довжина */
                 left: -8rem;         /* виходить з-під лівого краю */
                 bottom: -2.2rem;
+
+                @media (max-width:960px){
+                    height:2px;
+                    //width: clamp(120px, 28vw, 220px);
+                    width: 220%; /* адаптивна довжина */
+                }
 
                 @media (max-width:1280px){
                     left:-6rem; bottom:-1.8rem;
                 }
                 @media (max-width:960px){
-                    left:-2.2rem; bottom:-1.2rem; transform: rotate(30deg) scaleX(0);
+                    left:-2.2rem; bottom:-1.2rem; transform: rotate(-45deg) scaleX(0);
                 }
             }
-            &:after{
-                right: -8rem;        /* виходить за правий край */
-                top: -4.5rem;
 
-                @media (max-width:1280px){
-                    right:-6rem; top:-3.5rem;
-                }
+            .is-ready &:before{
+                opacity: 1;
+                transform: rotate(-45deg) scaleX(1); /* кінець: розгорнуто */
                 @media (max-width:960px){
-                    right:-2.2rem; top:-2.2rem;   transform: rotate(30deg) scaleX(0);
+                    transform: rotate(-45deg) scaleX(1);
                 }
             }
-
 
         }
 
@@ -418,7 +402,6 @@ main {
             position: absolute;
             z-index: 2;
         }
-
 
         @media (max-width: 960px) {
             flex-direction: column;
