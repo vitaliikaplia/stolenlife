@@ -384,127 +384,6 @@ function startGallery(gallery) {
     });
 }
 
-// document.addEventListener('DOMContentLoaded', () => {
-//     const burger = document.querySelector('.burger');
-//     if (!burger) return;
-//
-//     // 1) зібрати всі якорі зі сторінки
-//     const anchorNodes = [...document.querySelectorAll('[data-anchor]')];
-//
-//     // унікалізуємо за назвою (на випадок дублів)
-//     const seen = new Set();
-//     const anchors = anchorNodes
-//         .map(el => ({ name: (el.getAttribute('data-anchor') || '').trim(), el }))
-//         .filter(a => a.name && !seen.has(a.name) && (seen.add(a.name) || true));
-//
-//     // 2) створити/знайти overlay
-//     let overlay = document.querySelector('.nav-overlay');
-//     if (!overlay) {
-//         overlay = document.createElement('nav');
-//         overlay.className = 'nav-overlay';
-//         overlay.setAttribute('role', 'dialog');
-//         overlay.setAttribute('aria-modal', 'true');
-//         overlay.setAttribute('aria-label', 'Site navigation');
-//         document.body.appendChild(overlay);
-//     }
-//
-//     // 3) намалювати список пунктів
-//     //    текст беремо з data-anchor; якщо хочеш інший — додай data-anchor-title на секцію
-//     // 3) намалювати список пунктів
-//     overlay.innerHTML = `
-//       <div class="nav-overlay__inner" data-overlay-inner>
-//         ${anchors.map(a => {
-//             const title = a.el.getAttribute('data-anchor-title') || a.name;
-//             return `<a href="#" data-anchor="${a.name}" class="nav-overlay__link">${title}</a>`;
-//         }).join('')}
-//         <div class="nav-overlay__static">
-//           <a href="#gallery" class="button">See gallery</a>
-//           <a href="/catalog.pdf" class="button">Download catalog</a>
-//         </div>
-//       </div>
-//     `;
-//
-//     const links = overlay.querySelectorAll('[data-anchor]');
-//     const OPEN = 'is-open';
-//     const ACTIVE = 'is-active';
-//
-//     // хелпер: фактичний відступ зверху (щоб не під’їжджало під хедер)
-//     const getScrollOffset = () => {
-//         // читаємо твої CSS-перемінні для десктоп/мобіли
-//         const root = getComputedStyle(document.documentElement);
-//         const d = parseInt(root.getPropertyValue('--top-padding-desctop')) || 71;
-//         const m = parseInt(root.getPropertyValue('--top-padding-mobile')) || 82;
-//         return matchMedia('(max-width: 960px)').matches ? m : d;
-//     };
-//
-//     const scrollToAnchor = (targetEl) => {
-//         if (!targetEl) return;
-//         const offset = getScrollOffset();
-//         const top = targetEl.getBoundingClientRect().top + window.pageYOffset - offset;
-//         window.scrollTo({ top, behavior: 'smooth' });
-//     };
-//
-//     const openMenu = () => {
-//         burger.classList.add(ACTIVE);
-//         overlay.classList.add(OPEN);
-//         document.body.classList.add('no-scroll');
-//         // фокус для доступності
-//         const firstLink = overlay.querySelector('.nav-overlay__link');
-//         firstLink && firstLink.focus({ preventScroll: true });
-//     };
-//
-//     const closeMenu = () => {
-//         burger.classList.remove(ACTIVE);
-//         overlay.classList.remove(OPEN);
-//         document.body.classList.remove('no-scroll');
-//         burger.focus({ preventScroll: true });
-//     };
-//
-//     // 4) події
-//     burger.addEventListener('click', () => {
-//         overlay.classList.contains(OPEN) ? closeMenu() : openMenu();
-//     });
-//
-//     // клік по пункту меню
-//     links.forEach(link => {
-//         link.addEventListener('click', (e) => {
-//             e.preventDefault();
-//             const name = link.getAttribute('data-anchor');
-//             const target = document.querySelector(`[data-anchor="${CSS.escape(name)}"]`);
-//             closeMenu();
-//             // невелика затримка, щоби не смикало — меню закривається, потім скрол
-//             requestAnimationFrame(() => scrollToAnchor(target));
-//         });
-//     });
-//
-//     // закриття по Esc
-//     document.addEventListener('keydown', (e) => {
-//         if (e.key === 'Escape' && overlay.classList.contains(OPEN)) {
-//             closeMenu();
-//         }
-//     });
-//
-//     // клік по бекдропу (поза .nav-overlay__inner)
-//     overlay.addEventListener('click', (e) => {
-//         const inner = overlay.querySelector('[data-overlay-inner]');
-//         if (inner && !inner.contains(e.target)) closeMenu();
-//     });
-//
-//     // 5) опційно — підсвічувати активний пункт під час скролу
-//     // (можна вимкнути, якщо не треба)
-//     const highlightOnScroll = () => {
-//         const offset = getScrollOffset() + 2; // невеликий запас
-//         let current = anchors[0]?.name;
-//         anchors.forEach(a => {
-//             const y = a.el.getBoundingClientRect().top + window.pageYOffset - offset;
-//             if (window.pageYOffset >= y) current = a.name;
-//         });
-//         links.forEach(l => l.classList.toggle('is-current', l.getAttribute('data-anchor') === current));
-//     };
-//     window.addEventListener('scroll', highlightOnScroll, { passive: true });
-//     highlightOnScroll();
-// });
-
 (function initOverlayMenu(){
     const burger  = document.querySelector('.burger');
     const overlay = document.querySelector('.nav-overlay');
@@ -578,11 +457,13 @@ function startGallery(gallery) {
 
     function smoothScrollTo(el){
         if (!el) return;
-        const offsetY = 68; // підкоригуй за потреби
-        if (window.gsap && window.ScrollToPlugin){
-            gsap.to(window, { duration: 0.8, scrollTo: { y: el, offsetY, autoKill: true }, ease: 'power2.out' });
-        } else {
-            const top = el.getBoundingClientRect().top + window.pageYOffset - offsetY;
+
+        // стабільний шлях: нативний smooth + scroll-margin-top у CSS
+        try{
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }catch(_){
+            // fallback для дуже старих WebKit
+            const top = el.getBoundingClientRect().top + window.pageYOffset;
             window.scrollTo({ top, behavior: 'smooth' });
         }
     }
@@ -625,7 +506,8 @@ function startGallery(gallery) {
                 const target = Array.from(document.querySelectorAll('[data-anchor]'))
                     .find(s => s.getAttribute('data-anchor') === anchorName);
 
-                closeOverlay(() => smoothScrollTo(target)); // ⬅️ скрол тільки після відновлення прокрутки
+                // важливо: скролимо всередині колбеку closeOverlay (там вже подвійний rAF)
+                closeOverlay(() => smoothScrollTo(target));
                 return;
             }
 
