@@ -107,8 +107,6 @@ The more people see it, the stronger the impact of the stories it tells.
 
 ---
 
----
-
 ## 🧩 Based On
 
 This theme is based on [Blank](https://github.com/vitaliikaplia/blank),  
