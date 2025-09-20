@@ -11,7 +11,7 @@ $context = Timber::context();
 $timber_post = Timber::get_post();
 $context['post'] = $timber_post;
 
-$context['custom_fields'] = cache_fields($context['post']->ID);
+$context['fields'] = cache_fields($context['post']->ID);
 
 if (post_password_required($context['post']->ID)) {
     Timber::render('password.twig', $context);

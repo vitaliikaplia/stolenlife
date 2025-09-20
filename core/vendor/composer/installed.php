@@ -3,7 +3,7 @@
         'name' => 'vitaliikaplia/blank',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '5447650c929f4e7a8883285d748a29ace285857f',
+        'reference' => '68c61af418b6ab71be3418e2ac1b9dfb75e42805',
         'type' => 'theme',
         'install_path' => __DIR__ . '/../../../',
         'aliases' => array(),
@@ -58,7 +58,7 @@
         'vitaliikaplia/blank' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '5447650c929f4e7a8883285d748a29ace285857f',
+            'reference' => '68c61af418b6ab71be3418e2ac1b9dfb75e42805',
             'type' => 'theme',
             'install_path' => __DIR__ . '/../../../',
             'aliases' => array(),

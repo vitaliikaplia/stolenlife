@@ -223,3 +223,14 @@ body.mce-fullscreen{
         margin-top: 0 !important;
     }
 }
+
+.acf-field{
+    .acf-image-uploader.has-value{
+        img{
+            width: 100%;
+            max-width: 180px;
+            aspect-ratio: 1/1;
+            object-fit: contain;
+        }
+    }
+}

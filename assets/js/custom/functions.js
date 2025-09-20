@@ -1,3 +1,4 @@
+// custom functions for the website
 window.addEventListener('DOMContentLoaded', () => {
 
     if (document.querySelector('.custom-preloader')) {
@@ -16,14 +17,6 @@ window.addEventListener('DOMContentLoaded', () => {
         startGallery(document.querySelector('.gallery-wrapper'))
     }
 });
-
-/**
- * fix onload animation bug
- */
-const fixChromeLoadingPageAnimationIssue = function(){
-    document.body.classList.remove('preload');
-}
-window.addEventListener("DOMContentLoaded", fixChromeLoadingPageAnimationIssue);
 
 // preloader
 function startPreloader(preloader) {
@@ -308,33 +301,30 @@ function runAnimations() {
 
 function startGallery(gallery) {
     const buttons = document.querySelectorAll(".gallery-item");
-    const body = document.querySelector('body');
+    const body = document.body;
     const closeButton = gallery.querySelector('.close-gallery');
-    const slider = gallery.querySelector('.gallery-swiper'); // Точніше
+    const slider = gallery.querySelector('.gallery-swiper');
+
     const cap = {
-        root: gallery.querySelector('.gallery-caption'),
         title: gallery.querySelector('.gc-title'),
         desc:  gallery.querySelector('.gc-desc'),
         loc:   gallery.querySelector('.gc-location'),
         lim:   gallery.querySelector('.gc-limited'),
     };
 
-    let swiperInstance = null;
     const OPEN = 'is-open';
+    let swiperInstance = null;
 
     function fillCaption(fromSlideEl){
         if (!fromSlideEl) return;
         cap.title.textContent = `"${fromSlideEl.getAttribute('data-title') || ''}"`;
-        cap.desc.innerHTML = fromSlideEl.getAttribute('data-content') || '';
-        cap.loc.innerHTML = fromSlideEl.getAttribute('data-location') || '';
-        cap.lim.textContent = fromSlideEl.getAttribute('data-limited') || '';
+        cap.desc.innerHTML    = fromSlideEl.getAttribute('data-content')  || '';
+        cap.loc.innerHTML     = fromSlideEl.getAttribute('data-location') || '';
+        cap.lim.textContent   = fromSlideEl.getAttribute('data-limited')  || '';
     }
 
     function createSwiper() {
-        // Якщо хтось ініціалізував раніше (у app.min.js) — зносимо
-        if (slider.swiper) {
-            slider.swiper.destroy(true, true);
-        }
+        if (slider.swiper) slider.swiper.destroy(true, true);
         swiperInstance = new Swiper(slider, {
             slidesPerView: 1,
             spaceBetween: 0,
@@ -342,7 +332,10 @@ function startGallery(gallery) {
             loop: true,
             speed: 500,
             effect: "slide",
-            navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev"
+            },
             on: {
                 init(sw){ fillCaption(sw.slides[sw.activeIndex]); },
                 slideChange(sw){ fillCaption(sw.slides[sw.activeIndex]); }
@@ -350,16 +343,35 @@ function startGallery(gallery) {
         });
     }
 
+    // повертає "оригінальний" індекс (без дублікатів) за data-id
+    function getOriginalIndexById(targetId){
+        const originals = slider.querySelectorAll(
+            '.swiper-wrapper .swiper-slide:not(.swiper-slide-duplicate)'
+        );
+        for (let i = 0; i < originals.length; i++){
+            if ((originals[i].getAttribute('data-id') || '') === String(targetId)) {
+                return i; // це індекс, який очікує slideToLoop
+            }
+        }
+        return 0;
+    }
+
     buttons.forEach(button => {
         button.addEventListener("click", (e) => {
             e.preventDefault();
-            const focusedId = parseInt(button.getAttribute("data-id") || '1', 10) - 1;
+
+            const targetId = button.getAttribute("data-id"); // вже може бути будь-який рядок/UUID
+            const targetIndex = getOriginalIndexById(targetId);
 
             body.classList.add("no-scroll");
             gallery.classList.add(OPEN);
 
             if (!swiperInstance) createSwiper();
-            swiperInstance.slideToLoop(Math.max(0, focusedId), 0);
+
+            // миттєво перейти на потрібний слайд за "оригінальним" індексом
+            swiperInstance.slideToLoop(targetIndex, 0);
+
+            // синхронізуємо підпис (на випадок, якщо Swiper ще не викликав slideChange)
             requestAnimationFrame(() => fillCaption(swiperInstance.slides[swiperInstance.activeIndex]));
         });
     });

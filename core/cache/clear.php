@@ -9,6 +9,8 @@ function my_acf_update_value( $value, $post_id, $field  ) {
         delete_transient( 'general_fields'.LANG_SUFFIX );
     } elseif ($post_id && get_post_type( $post_id ) == "page"){
         delete_transient( 'custom_page_' . $post_id . '_fields'.LANG_SUFFIX );
+    } elseif ($post_id && get_post_type( $post_id ) == "gallery"){
+        delete_transient( 'custom_page_' . $post_id . '_fields'.LANG_SUFFIX );
     }
 
     delete_transient( 'header_css' );

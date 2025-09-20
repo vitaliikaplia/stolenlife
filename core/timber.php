@@ -37,6 +37,11 @@ class StarterSite extends Site {
         $twig->addFunction( new \Twig\TwigFunction('get_option', 'get_option'));
         $twig->addFunction( new \Twig\TwigFunction('wp_editor', 'wp_editor'));
         $twig->addFunction( new \Twig\TwigFunction('checked', 'checked'));
+        $twig->addFunction( new \Twig\TwigFunction('get_canvas', 'get_canvas'));
+        $twig->addFunction( new \Twig\TwigFunction('get_canvases', 'get_canvases'));
+        $twig->addFunction( new \Twig\TwigFunction('fix_phone_format', 'fix_phone_format'));
+        $twig->addFunction( new \Twig\TwigFunction('short_phone_format', 'short_phone_format'));
+        $twig->addFunction( new \Twig\TwigFunction('nice_phone_format', 'nice_phone_format'));
         return $twig;
     }
 }

@@ -11,9 +11,6 @@ function custom_dashboard_assets(){
     wp_register_script( 'custom-dashboard', TEMPLATE_DIRECTORY_URL . 'assets/js/dashboard.min.js', '', ASSETS_VERSION, true);
     wp_enqueue_script( 'custom-dashboard' );
 
-    wp_register_script( 'custom-gutenberg', TEMPLATE_DIRECTORY_URL . 'assets/js/gutenberg.min.js', '', ASSETS_VERSION, true);
-    wp_enqueue_script( 'custom-gutenberg' );
-
     global $pagenow;
 
     if($pagenow == "options-general.php" && !empty($_GET['page'])){
