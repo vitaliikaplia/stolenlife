@@ -564,34 +564,16 @@ function startGallery(gallery) {
     }
 
     function closeOverlay(cb){
-        const wasOpen = overlay.classList.contains('is-open');
-
         burger.classList.remove('is-active');
         overlay.classList.remove('is-open');
         body.classList.remove('no-scroll');
 
-        if (typeof cb !== 'function') return;
-
-        // якщо вже закритий — скролимо одразу
-        if (!wasOpen) { requestAnimationFrame(cb); return; }
-
-        let done = false;
-        const finish = () => {
-            if (done) return;
-            done = true;
-            requestAnimationFrame(cb);
-        };
-
-        // 1) основний шлях — чекаємо завершення анімації прозорості
-        const onEnd = (ev) => {
-            if (ev.target !== overlay) return; // ігноруємо дітей
-            overlay.removeEventListener('transitionend', onEnd);
-            finish();
-        };
-        overlay.addEventListener('transitionend', onEnd, { once: true });
-
-        // 2) fallback на випадок, якщо transitionend не прийде
-        setTimeout(finish, 450); // має відповідати тривалості твоєї анімації .35s (+ запас)
+        if (typeof cb === 'function') {
+            // подвійний rAF гарантує, що браузер застосує стиль overflow
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => cb());
+            });
+        }
     }
 
     function getScrollOffset(){
@@ -645,9 +627,10 @@ function startGallery(gallery) {
             const anchorName = link.getAttribute('data-anchor');
             if (anchorName) {
                 e.preventDefault();
-                const target = Array.from(document.querySelectorAll('[data-anchor]'))
-                    .find(s => s.getAttribute('data-anchor') === anchorName);
-                if (target) closeOverlay(() => smoothScrollTo(target));
+                const target = document.querySelector(`[data-anchor="${CSS.escape(anchorName)}"]`);
+                if (target) {
+                    closeOverlay(() => smoothScrollTo(target));
+                }
             }
         });
 
