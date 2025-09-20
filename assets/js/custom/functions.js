@@ -601,9 +601,10 @@ function startGallery(gallery) {
             if (action === 'open-gallery') {
                 e.preventDefault();
                 closeOverlay();
-                // тригеримо перший тригер галереї
-                const trigger = document.querySelector('.gallery-item');
-                if (trigger) trigger.click();
+                setTimeout(() => {
+                    const trigger = document.querySelector('.gallery-item');
+                    if (trigger) trigger.click();
+                }, 350);
                 return;
             }
 
@@ -617,10 +618,13 @@ function startGallery(gallery) {
             const anchorName = link.getAttribute('data-anchor');
             if (anchorName) {
                 e.preventDefault();
-                const target = Array.from(document.querySelectorAll('[data-anchor]')).find(s => s.getAttribute('data-anchor') === anchorName);
+                const target = Array.from(document.querySelectorAll('[data-anchor]'))
+                    .find(s => s.getAttribute('data-anchor') === anchorName);
                 if (target) {
                     closeOverlay();
-                    smoothScrollTo(target);
+                    setTimeout(() => {
+                        smoothScrollTo(target);
+                    }, 350); // дочекайся поки зникне .no-scroll
                 }
             }
         });
