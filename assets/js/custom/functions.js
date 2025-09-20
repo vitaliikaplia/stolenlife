@@ -339,7 +339,8 @@ function startGallery(gallery) {
             on: {
                 init(sw){ fillCaption(sw.slides[sw.activeIndex]); },
                 slideChange(sw){ fillCaption(sw.slides[sw.activeIndex]); }
-            }
+            },
+            autoHeight: true,
         });
     }
 
@@ -382,3 +383,271 @@ function startGallery(gallery) {
         body.classList.remove("no-scroll");
     });
 }
+
+// document.addEventListener('DOMContentLoaded', () => {
+//     const burger = document.querySelector('.burger');
+//     if (!burger) return;
+//
+//     // 1) зібрати всі якорі зі сторінки
+//     const anchorNodes = [...document.querySelectorAll('[data-anchor]')];
+//
+//     // унікалізуємо за назвою (на випадок дублів)
+//     const seen = new Set();
+//     const anchors = anchorNodes
+//         .map(el => ({ name: (el.getAttribute('data-anchor') || '').trim(), el }))
+//         .filter(a => a.name && !seen.has(a.name) && (seen.add(a.name) || true));
+//
+//     // 2) створити/знайти overlay
+//     let overlay = document.querySelector('.nav-overlay');
+//     if (!overlay) {
+//         overlay = document.createElement('nav');
+//         overlay.className = 'nav-overlay';
+//         overlay.setAttribute('role', 'dialog');
+//         overlay.setAttribute('aria-modal', 'true');
+//         overlay.setAttribute('aria-label', 'Site navigation');
+//         document.body.appendChild(overlay);
+//     }
+//
+//     // 3) намалювати список пунктів
+//     //    текст беремо з data-anchor; якщо хочеш інший — додай data-anchor-title на секцію
+//     // 3) намалювати список пунктів
+//     overlay.innerHTML = `
+//       <div class="nav-overlay__inner" data-overlay-inner>
+//         ${anchors.map(a => {
+//             const title = a.el.getAttribute('data-anchor-title') || a.name;
+//             return `<a href="#" data-anchor="${a.name}" class="nav-overlay__link">${title}</a>`;
+//         }).join('')}
+//         <div class="nav-overlay__static">
+//           <a href="#gallery" class="button">See gallery</a>
+//           <a href="/catalog.pdf" class="button">Download catalog</a>
+//         </div>
+//       </div>
+//     `;
+//
+//     const links = overlay.querySelectorAll('[data-anchor]');
+//     const OPEN = 'is-open';
+//     const ACTIVE = 'is-active';
+//
+//     // хелпер: фактичний відступ зверху (щоб не під’їжджало під хедер)
+//     const getScrollOffset = () => {
+//         // читаємо твої CSS-перемінні для десктоп/мобіли
+//         const root = getComputedStyle(document.documentElement);
+//         const d = parseInt(root.getPropertyValue('--top-padding-desctop')) || 71;
+//         const m = parseInt(root.getPropertyValue('--top-padding-mobile')) || 82;
+//         return matchMedia('(max-width: 960px)').matches ? m : d;
+//     };
+//
+//     const scrollToAnchor = (targetEl) => {
+//         if (!targetEl) return;
+//         const offset = getScrollOffset();
+//         const top = targetEl.getBoundingClientRect().top + window.pageYOffset - offset;
+//         window.scrollTo({ top, behavior: 'smooth' });
+//     };
+//
+//     const openMenu = () => {
+//         burger.classList.add(ACTIVE);
+//         overlay.classList.add(OPEN);
+//         document.body.classList.add('no-scroll');
+//         // фокус для доступності
+//         const firstLink = overlay.querySelector('.nav-overlay__link');
+//         firstLink && firstLink.focus({ preventScroll: true });
+//     };
+//
+//     const closeMenu = () => {
+//         burger.classList.remove(ACTIVE);
+//         overlay.classList.remove(OPEN);
+//         document.body.classList.remove('no-scroll');
+//         burger.focus({ preventScroll: true });
+//     };
+//
+//     // 4) події
+//     burger.addEventListener('click', () => {
+//         overlay.classList.contains(OPEN) ? closeMenu() : openMenu();
+//     });
+//
+//     // клік по пункту меню
+//     links.forEach(link => {
+//         link.addEventListener('click', (e) => {
+//             e.preventDefault();
+//             const name = link.getAttribute('data-anchor');
+//             const target = document.querySelector(`[data-anchor="${CSS.escape(name)}"]`);
+//             closeMenu();
+//             // невелика затримка, щоби не смикало — меню закривається, потім скрол
+//             requestAnimationFrame(() => scrollToAnchor(target));
+//         });
+//     });
+//
+//     // закриття по Esc
+//     document.addEventListener('keydown', (e) => {
+//         if (e.key === 'Escape' && overlay.classList.contains(OPEN)) {
+//             closeMenu();
+//         }
+//     });
+//
+//     // клік по бекдропу (поза .nav-overlay__inner)
+//     overlay.addEventListener('click', (e) => {
+//         const inner = overlay.querySelector('[data-overlay-inner]');
+//         if (inner && !inner.contains(e.target)) closeMenu();
+//     });
+//
+//     // 5) опційно — підсвічувати активний пункт під час скролу
+//     // (можна вимкнути, якщо не треба)
+//     const highlightOnScroll = () => {
+//         const offset = getScrollOffset() + 2; // невеликий запас
+//         let current = anchors[0]?.name;
+//         anchors.forEach(a => {
+//             const y = a.el.getBoundingClientRect().top + window.pageYOffset - offset;
+//             if (window.pageYOffset >= y) current = a.name;
+//         });
+//         links.forEach(l => l.classList.toggle('is-current', l.getAttribute('data-anchor') === current));
+//     };
+//     window.addEventListener('scroll', highlightOnScroll, { passive: true });
+//     highlightOnScroll();
+// });
+
+(function initOverlayMenu(){
+    const burger  = document.querySelector('.burger');
+    const overlay = document.querySelector('.nav-overlay');
+    const body    = document.body;
+
+    if (!burger || !overlay) return;
+
+    // зчитуємо URL каталогу з існуючої кнопки на сторінці
+    const catalogBtnEl   = document.getElementById('catalog-button');
+    const catalogHref    = catalogBtnEl ? catalogBtnEl.getAttribute('href') : null;
+    const catalogDlAttr  = catalogBtnEl ? catalogBtnEl.getAttribute('download') : null;
+    const catalogTarget  = catalogBtnEl ? catalogBtnEl.getAttribute('target') : null;
+
+    function getAnchors(){
+        // збираємо всі секції з data-anchor
+        const raw = Array.from(document.querySelectorAll('[data-anchor]'));
+        // фільтр від дубляжу назв (якщо раптом однакові)
+        const seen = new Set();
+        const list = [];
+        for (const el of raw) {
+            const name  = el.getAttribute('data-anchor')?.trim();
+            if (!name || seen.has(name)) continue;
+            seen.add(name);
+            list.push({ name, el });
+        }
+        return list;
+    }
+
+    function buildOverlay(){
+        const anchors = getAnchors();
+
+        // будуємо розмітку якорів
+        const linksHTML = anchors.map(a => {
+            const title = a.el.getAttribute('data-anchor-title') || a.name;
+            // href ставимо для доступності/копіювання; реальний скрол робимо JS-ом
+            return `<a href="#${encodeURIComponent(a.name)}" data-anchor="${a.name}" class="nav-overlay__link">${title}</a>`;
+        }).join('');
+
+        // статичні кнопки
+        const staticButtonsHTML = `
+      <div class="nav-overlay__static">
+        <a href="#open-gallery" class="button" data-action="open-gallery">See gallery</a>
+        ${catalogHref ? `<a class="button" href="${catalogHref}" ${catalogTarget ? `target="${catalogTarget}"` : ''} ${catalogDlAttr ? `download="${catalogDlAttr}"` : ''} data-action="download-catalog">Download catalog</a>` : ''}
+      </div>
+    `;
+
+        overlay.innerHTML = `
+      <div class="nav-overlay__inner" data-overlay-inner>
+        ${linksHTML}
+        ${staticButtonsHTML}
+      </div>
+    `;
+
+        wireOverlayHandlers();
+        updateCurrentLink(); // одразу підсвітити актуальний пункт
+    }
+
+    function openOverlay(){
+        burger.classList.add('is-active');
+        overlay.classList.add('is-open');
+        body.classList.add('no-scroll');
+    }
+    function closeOverlay(){
+        burger.classList.remove('is-active');
+        overlay.classList.remove('is-open');
+        body.classList.remove('no-scroll');
+    }
+
+    function smoothScrollTo(el){
+        if (!el) return;
+        // використовуємо GSAP ScrollTo, якщо є; інакше — native
+        const offsetY = 68; // невеликий відступ зверху (можеш підкоригувати)
+        if (window.gsap && window.ScrollToPlugin) {
+            gsap.to(window, { duration: 0.8, scrollTo: { y: el, offsetY, autoKill: true }, ease: 'power2.out' });
+        } else {
+            const top = el.getBoundingClientRect().top + window.pageYOffset - offsetY;
+            window.scrollTo({ top, behavior: 'smooth' });
+        }
+    }
+
+    function wireOverlayHandlers(){
+        // клік по бургеру
+        burger.onclick = (e) => {
+            e.preventDefault();
+            overlay.classList.contains('is-open') ? closeOverlay() : openOverlay();
+        };
+
+        // делегування кліків у меню
+        overlay.addEventListener('click', (e) => {
+            const link = e.target.closest('a');
+            if (!link) return;
+
+            const action = link.getAttribute('data-action');
+            if (action === 'open-gallery') {
+                e.preventDefault();
+                closeOverlay();
+                // тригеримо перший тригер галереї
+                const trigger = document.querySelector('.gallery-item');
+                if (trigger) trigger.click();
+                return;
+            }
+
+            if (action === 'download-catalog') {
+                // не перешкоджаємо дефолту, просто закриємо оверлей і дамо браузеру завантажити файл
+                closeOverlay();
+                return; // хай йде стандартна навігація/завантаження
+            }
+
+            // якірний пункт
+            const anchorName = link.getAttribute('data-anchor');
+            if (anchorName) {
+                e.preventDefault();
+                const target = Array.from(document.querySelectorAll('[data-anchor]')).find(s => s.getAttribute('data-anchor') === anchorName);
+                if (target) {
+                    closeOverlay();
+                    smoothScrollTo(target);
+                }
+            }
+        });
+    }
+
+    // підсвічування активного пункту (is-current)
+    let anchorCache = [];
+    function updateCurrentLink(){
+        anchorCache = getAnchors().map(a => {
+            const link = overlay.querySelector(`.nav-overlay__link[data-anchor="${CSS.escape(a.name)}"]`);
+            return { ...a, link };
+        });
+
+        const viewportTop = window.scrollY + 90; // невеликий offset
+        let current = null;
+        for (const item of anchorCache) {
+            const top = item.el.getBoundingClientRect().top + window.scrollY;
+            if (top <= viewportTop) current = item;
+        }
+        overlay.querySelectorAll('.nav-overlay__link').forEach(a => a.classList.remove('is-current'));
+        if (current && current.link) current.link.classList.add('is-current');
+    }
+
+    // оновлюємо активний пункт на скролі/ресайзі
+    window.addEventListener('scroll', updateCurrentLink, { passive: true });
+    window.addEventListener('resize', updateCurrentLink);
+
+    // ініт
+    buildOverlay();
+})();

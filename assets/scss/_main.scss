@@ -1529,7 +1529,7 @@ main {
         .title {
             font-family: KyivType Sans, sans-serif;
             font-weight: 700;
-            font-size: 34px;
+            font-size: 48px;
             line-height: 1;
             letter-spacing: 0;
             margin-bottom: 40px;
@@ -1549,7 +1549,7 @@ main {
 
             .about {
                 font-weight: 400;
-                font-size: 15px;
+                font-size: 19px;
                 line-height: 1;
                 letter-spacing: 0;
                 color: rgba(var(--main-text-color-rgb), 0.7);
@@ -1560,7 +1560,7 @@ main {
                 color: var(--main-text-color);
                 font-family: KyivType Sans, sans-serif;
                 font-weight: 700;
-                font-size: 20px;
+                font-size: 28px;
                 line-height: 1;
                 letter-spacing: 0;
             }
@@ -1584,7 +1584,7 @@ main {
 
                 a {
                     color: inherit;
-                    font-size: 11px;
+                    font-size: 18px;
                     font-weight: 400;
                     text-decoration: none;
                     position: relative;
@@ -1741,21 +1741,45 @@ main {
     }
 }
 
-/*!* authors *!*/
+// 404 page styles
+.error404{
+    .code {
+        font-size: 100px;
+        font-weight: bold;
+    }
+    .message {
+        font-size: 24px;
+        margin-top: 20px;
+    }
+    .description {
+        font-size: 16px;
+        margin-top: 10px;
+    }
+    .btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        color: #fff;
+        background-color: var(--accent-color-secondary);
+        border-radius: 5px;
+        text-decoration: none;
+    }
+}
 
 /* ===== Popup Gallery ===== */
 
 .gallery-wrapper{
     position: fixed;
     inset: 0;
-    z-index: 100;
+    z-index: 10101010130;
     background: var(--main-background-color);
     padding: 44px 39px;
     height: 100svh;
 
     /* плавне відкриття/закриття */
     opacity: 0; visibility: hidden; pointer-events: none;
-    transform: translateY(10px) scale(.98);
+    transform: translateY(10px) scale(.98) translateZ(10101010130px);
     transition: opacity .35s ease, transform .35s ease, visibility 0s linear .35s;
     will-change: opacity, transform;
 
@@ -1768,7 +1792,7 @@ main {
 
     &.is-open{
         opacity: 1; visibility: visible; pointer-events: auto;
-        transform: none;
+        transform: translateY(0) scale(1) translateZ(10101010130px);
         transition: opacity .35s ease, transform .35s ease;
         &::before{ background: rgba(0,0,0,.35); }
     }
@@ -1972,28 +1996,152 @@ main {
     }
 }
 
-// 404 page styles
-.error404{
-    .code {
-        font-size: 100px;
-        font-weight: bold;
+/* === Mobile: gallery should scroll; images full height without cropping === */
+@media (max-width: 960px){
+    /* сам попап може скролитися */
+    .gallery-wrapper{
+        height: auto;          /* не фіксуємо 100svh */
+        min-height: 100svh;    /* щоб стартово займав екран */
+        overflow: auto;        /* дозволяємо скрол всередині попапа */
     }
-    .message {
-        font-size: 24px;
-        margin-top: 20px;
+
+    /* грід попапа не примушує дітей підганятись у 100% висоти */
+    .block.gallery{
+        height: auto;
+        align-items: start;
     }
-    .description {
-        font-size: 16px;
-        margin-top: 10px;
+
+    /* сам слайдер теж не фіксуємо по висоті */
+    .gallery-swiper{
+        height: auto !important;
     }
-    .btn {
-        display: inline-block;
-        margin-top: 20px;
-        padding: 10px 20px;
-        font-size: 16px;
-        color: #fff;
-        background-color: var(--accent-color-secondary);
-        border-radius: 5px;
-        text-decoration: none;
+
+    /* прибираємо обмеження по висоті — картинка зберігає пропорції, росте стільки, скільки треба */
+    .gallery-swiper .slide img{
+        max-height: none !important;
+        height: auto !important;
+        width: 100% !important;
+        object-fit: contain !important; /* без кропу */
     }
+
+    /* підпис теж може вийти за екран і скролитись разом з попапом */
+    .gallery-caption{
+        max-height: none;
+        overflow: visible;
+    }
+}
+
+.burger {
+    width: 32px;
+    height: 24px;
+    position: fixed;
+    top: 32px;
+    right: 32px;
+    z-index: 100200;
+    transform: translateZ(100200px);
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    &:before{
+        content: '';
+        display: block;
+        background: var(--main-background-color);
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 60px;
+        height: 60px;
+        transform: translate(-50%, -50%) translateZ(5px);
+        z-index: 5;
+    }
+}
+.burger span {
+    position: absolute;
+    z-index: 10;
+    transform: translateZ(10px);
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--main-text-color);
+    border-radius: 2px;
+    transition: .3s ease;
+}
+.burger span:nth-child(1){ top: 0; }
+.burger span:nth-child(2){ top: 10px; }
+.burger span:nth-child(3){ top: 20px; }
+
+/* активний стан */
+.burger.is-active span:nth-child(1){ transform: translateY(10px) rotate(45deg); }
+.burger.is-active span:nth-child(2){ opacity: 0; }
+.burger.is-active span:nth-child(3){ transform: translateY(-10px) rotate(-45deg); }
+
+/* оверлей */
+.nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--main-background-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 24px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .35s ease;
+    z-index: 150;
+}
+.nav-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+.nav-overlay a {
+    font-family: KyivType Sans, sans-serif;
+    font-size: 28px;
+    color: var(--main-text-color);
+    text-decoration: none;
+    transition: color .2s;
+}
+.nav-overlay a:hover {
+    color: var(--accent-color-tertiary);
+}
+.nav-overlay__inner { display:flex; flex-direction:column; gap:16px; align-items:center; }
+.nav-overlay__link { outline: none; }
+.nav-overlay__link.is-current { color: var(--accent-color-tertiary); }
+.nav-overlay__link:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+.nav-overlay__static {
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+}
+
+.nav-overlay .button {
+    background: transparent;
+    color: var(--main-text-color);
+    font-family: "KyivType Sans", sans-serif;
+    font-size: 18px;
+    text-transform: capitalize;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    min-width: 180px;
+    padding: 0 24px;
+    border: 1px solid rgba(var(--main-text-color-rgb), .5);
+    border-radius: 50px;
+    transition: background-color .3s ease, color .3s ease;
+    text-decoration: none;
+}
+.nav-overlay .button:hover {
+    background-color: rgba(var(--main-text-color-rgb), .15);
+}
+.nav-overlay .button:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
 }
