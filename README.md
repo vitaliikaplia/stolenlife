@@ -79,7 +79,7 @@ The website serves as a **digital exhibition space**, making the project accessi
 
 - **Author / Curator:** [Darina Dorogan](mailto:darina.dorogan@stolenlife.org)
 - **Design:** [Olesia Koshkina](https://www.behance.net/olesia_koshkina)
-- **Development:** Zadorozhnii Konstiantyn, [Vitalii Kaplia](https://vitaliikaplia.com/)
+- **Development:** [Zadorozhnii Konstiantyn](https://t.me/kozzztia), [Vitalii Kaplia](https://vitaliikaplia.com/)
 
 ---
 
