@@ -509,84 +509,77 @@ function startGallery(gallery) {
     const burger  = document.querySelector('.burger');
     const overlay = document.querySelector('.nav-overlay');
     const body    = document.body;
-
     if (!burger || !overlay) return;
 
-    // зчитуємо URL каталогу з існуючої кнопки на сторінці
-    const catalogBtnEl   = document.getElementById('catalog-button');
-    const catalogHref    = catalogBtnEl ? catalogBtnEl.getAttribute('href') : null;
-    const catalogDlAttr  = catalogBtnEl ? catalogBtnEl.getAttribute('download') : null;
-    const catalogTarget  = catalogBtnEl ? catalogBtnEl.getAttribute('target') : null;
+    // беремо дані каталогу з кнопки на сторінці
+    const catalogBtnEl  = document.getElementById('catalog-button');
+    const catalogHref   = catalogBtnEl ? catalogBtnEl.getAttribute('href')     : null;
+    const catalogDl     = catalogBtnEl ? catalogBtnEl.getAttribute('download') : null;
+    const catalogTarget = catalogBtnEl ? catalogBtnEl.getAttribute('target')   : null;
+
+    // ===== utils
+    const OPEN = 'is-open';
+    const ACTIVE = 'is-active';
 
     function getAnchors(){
         const raw = Array.from(document.querySelectorAll('[data-anchor]'));
-        const seen = new Set();
-        const list = [];
-        for (const el of raw) {
-            const name = el.getAttribute('data-anchor')?.trim();
+        const seen = new Set(); const list = [];
+        for (const el of raw){
+            const name = (el.getAttribute('data-anchor') || '').trim();
             if (!name || seen.has(name)) continue;
-            seen.add(name);
-            list.push({ name, el });
+            seen.add(name); list.push({ name, el });
         }
         return list;
     }
 
     function buildOverlay(){
         const anchors = getAnchors();
-
         const linksHTML = anchors.map(a => {
             const title = a.el.getAttribute('data-anchor-title') || a.name;
             return `<a href="#${encodeURIComponent(a.name)}" data-anchor="${a.name}" class="nav-overlay__link">${title}</a>`;
         }).join('');
 
         const staticButtonsHTML = `
-          <div class="nav-overlay__static">
-            <a href="#open-gallery" class="button" data-action="open-gallery">See gallery</a>
-            ${catalogHref ? `<a class="button" href="${catalogHref}" ${catalogTarget ? `target="${catalogTarget}"` : ''} ${catalogDlAttr ? `download="${catalogDlAttr}"` : ''} data-action="download-catalog">Download catalog</a>` : ''}
-          </div>
-        `;
+      <div class="nav-overlay__static">
+        <a href="#open-gallery" class="button" data-action="open-gallery">See gallery</a>
+        ${catalogHref ? `<a class="button" href="${catalogHref}" ${catalogTarget ? `target="${catalogTarget}"` : ''} ${catalogDl ? `download="${catalogDl}"` : ''} data-action="download-catalog">Download catalog</a>` : ''}
+      </div>
+    `;
 
         overlay.innerHTML = `
-          <div class="nav-overlay__inner" data-overlay-inner>
-            ${linksHTML}
-            ${staticButtonsHTML}
-          </div>
-        `;
+      <div class="nav-overlay__inner" data-overlay-inner>
+        ${linksHTML}
+        ${staticButtonsHTML}
+      </div>
+    `;
 
-        wireOverlayHandlers();
+        wireHandlers();
         updateCurrentLink();
     }
 
     function openOverlay(){
-        burger.classList.add('is-active');
-        overlay.classList.add('is-open');
+        burger.classList.add(ACTIVE);
+        overlay.classList.add(OPEN);
         body.classList.add('no-scroll');
     }
 
-    function closeOverlay(cb){
-        burger.classList.remove('is-active');
-        overlay.classList.remove('is-open');
+    // головний фікс: подвійний rAF після зняття no-scroll
+    function closeOverlay(afterUnlocked){
+        burger.classList.remove(ACTIVE);
+        overlay.classList.remove(OPEN);
         body.classList.remove('no-scroll');
 
-        if (typeof cb === 'function') {
-            // подвійний rAF гарантує, що браузер застосує стиль overflow
+        if (typeof afterUnlocked === 'function'){
             requestAnimationFrame(() => {
-                requestAnimationFrame(() => cb());
+                requestAnimationFrame(() => afterUnlocked());
             });
         }
     }
 
-    function getScrollOffset(){
-        const root = getComputedStyle(document.documentElement);
-        const d = parseInt(root.getPropertyValue('--top-padding-desctop')) || 71;
-        const m = parseInt(root.getPropertyValue('--top-padding-mobile')) || 82;
-        return matchMedia('(max-width: 960px)').matches ? m : d;
-    }
-
     function smoothScrollTo(el){
         if (!el) return;
-        const offsetY = getScrollOffset();
-        if (window.gsap && window.ScrollToPlugin) {
+        const offsetY = 68; // підкоригуй за потреби
+        if (window.gsap && window.ScrollToPlugin){
             gsap.to(window, { duration: 0.8, scrollTo: { y: el, offsetY, autoKill: true }, ease: 'power2.out' });
         } else {
             const top = el.getBoundingClientRect().top + window.pageYOffset - offsetY;
@@ -594,59 +587,55 @@ function startGallery(gallery) {
         }
     }
 
-    function wireOverlayHandlers(){
+    function wireHandlers(){
         // бургер
         burger.onclick = (e) => {
             e.preventDefault();
-            overlay.classList.contains('is-open') ? closeOverlay() : openOverlay();
+            overlay.classList.contains(OPEN) ? closeOverlay() : openOverlay();
         };
 
-        // делегування кліків у меню
+        // кліки в оверлеї (делегування)
         overlay.addEventListener('click', (e) => {
-            const link = e.target.closest('a');
-            if (!link) return;
+            const a = e.target.closest('a');
+            if (!a) return;
 
-            const action = link.getAttribute('data-action');
+            const act = a.getAttribute('data-action');
 
-            if (action === 'open-gallery') {
+            // "See gallery"
+            if (act === 'open-gallery'){
                 e.preventDefault();
                 closeOverlay(() => {
                     const trigger = document.querySelector('.gallery-item');
-                    trigger && trigger.click();
+                    if (trigger) trigger.click();
                 });
                 return;
             }
 
-            if (action === 'download-catalog') {
-                // просто закриваємо оверлей і даємо браузеру відпрацювати посиланню
+            // "Download catalog"
+            if (act === 'download-catalog'){
+                // даємо браузеру зробити дефолт (завантаження), просто закриваємо
                 closeOverlay();
                 return;
             }
 
-            // якорі
-            const anchorName = link.getAttribute('data-anchor');
-            if (anchorName) {
+            // якір
+            const anchorName = a.getAttribute('data-anchor');
+            if (anchorName){
                 e.preventDefault();
-                const target = document.querySelector(`[data-anchor="${CSS.escape(anchorName)}"]`);
-                if (target) {
-                    closeOverlay(() => smoothScrollTo(target));
-                }
-            }
-        });
+                const target = Array.from(document.querySelectorAll('[data-anchor]'))
+                    .find(s => s.getAttribute('data-anchor') === anchorName);
 
-        // клік по бекдропу (поза .nav-overlay__inner) — закривати
-        overlay.addEventListener('click', (e) => {
+                closeOverlay(() => smoothScrollTo(target)); // ⬅️ скрол тільки після відновлення прокрутки
+                return;
+            }
+
+            // клік по бекдропу поза inner — закрити
             const inner = overlay.querySelector('[data-overlay-inner]');
             if (inner && !inner.contains(e.target)) closeOverlay();
         });
-
-        // Esc — закривати
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeOverlay();
-        });
     }
 
-    // підсвітка активного пункту
+    // підсвічування активного пункту
     let anchorCache = [];
     function updateCurrentLink(){
         anchorCache = getAnchors().map(a => {
@@ -654,9 +643,9 @@ function startGallery(gallery) {
             return { ...a, link };
         });
 
-        const viewportTop = window.scrollY + getScrollOffset() + 20;
+        const viewportTop = window.scrollY + 90;
         let current = null;
-        for (const item of anchorCache) {
+        for (const item of anchorCache){
             const top = item.el.getBoundingClientRect().top + window.scrollY;
             if (top <= viewportTop) current = item;
         }
@@ -667,5 +656,6 @@ function startGallery(gallery) {
     window.addEventListener('scroll', updateCurrentLink, { passive: true });
     window.addEventListener('resize', updateCurrentLink);
 
+    // init
     buildOverlay();
 })();
