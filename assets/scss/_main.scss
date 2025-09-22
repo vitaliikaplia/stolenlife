@@ -2025,6 +2025,11 @@ main {
     background: none;
     border: none;
     cursor: pointer;
+    display: none;
+
+    .is-ready &{
+        display: block;
+    }
 
     &:before{
         content: '';
