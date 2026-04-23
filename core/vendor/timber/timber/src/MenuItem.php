@@ -11,6 +11,7 @@ use WP_Post;
 /**
  * Class MenuItem
  *
+ * @phpstan-consistent-constructor
  * @api
  */
 class MenuItem extends CoreEntity implements Stringable
@@ -94,6 +95,166 @@ class MenuItem extends CoreEntity implements Stringable
      */
     public $object;
 
+    /**
+     * ID of post author.
+     *
+     * A numeric string, for compatibility reasons.
+     *
+     * @var string
+     */
+    public $post_author;
+
+    /**
+     * The post's local publication time.
+     *
+     * @var string
+     */
+    public $post_date;
+
+    /**
+     * The post's GMT publication time.
+     *
+     * @var string
+     */
+    public $post_date_gmt;
+
+    /**
+     * The post's content.
+     *
+     * @var string
+     */
+    public $post_content;
+
+    /**
+     * The post's title.
+     *
+     * @var string
+     */
+    public $post_title;
+
+    /**
+     * The post's excerpt.
+     *
+     * @var string
+     */
+    public $post_excerpt;
+
+    /**
+     * The post's status.
+     *
+     * @var string
+     */
+    public $post_status;
+
+    /**
+     * Whether comments are allowed.
+     *
+     * @var string
+     */
+    public $comment_status;
+
+    /**
+     * Whether pings are allowed.
+     *
+     * @var string
+     */
+    public $ping_status;
+
+    /**
+     * The post's password in plain text.
+     *
+     * @var string
+     */
+    public $post_password;
+
+    /**
+     * URLs queued to be pinged.
+     *
+     * @var string
+     */
+    public $to_ping;
+
+    /**
+     * URLs that have been pinged.
+     *
+     * @var string
+     */
+    public $pinged;
+
+    /**
+     * The post's local modified time.
+     *
+     * @var string
+     */
+    public $post_modified;
+
+    /**
+     * The post's GMT modified time.
+     *
+     * @var string
+     */
+    public $post_modified_gmt;
+
+    /**
+     * A utility DB field for post content.
+     *
+     * @var string
+     */
+    public $post_content_filtered;
+
+    /**
+     * ID of a post's parent post.
+     *
+     * @var int
+     */
+    public $post_parent;
+
+    /**
+     * The unique identifier for a post, not necessarily a URL, used as the feed GUID.
+     *
+     * @var string
+     */
+    public $guid;
+
+    /**
+     * A field used for ordering posts.
+     *
+     * @var int
+     */
+    public $menu_order;
+
+    /**
+     * The post's type, like post or page.
+     *
+     * @var string
+     */
+    public $post_type;
+
+    /**
+     * An attachment's mime type.
+     *
+     * @var string
+     */
+    public $post_mime_type;
+
+    /**
+     * Cached comment count.
+     *
+     * A numeric string, for compatibility reasons.
+     *
+     * @var string
+     */
+    public $comment_count;
+
+    /**
+     * Stores the post object's sanitization level.
+     *
+     * Does not correspond to a DB field.
+     *
+     * @var string
+     */
+    public $filter;
+
     protected $_name;
 
     protected $_menu_item_url;
@@ -102,7 +263,7 @@ class MenuItem extends CoreEntity implements Stringable
      * @internal
      * @param array|object $data The data this MenuItem is wrapping
      * @param Menu $menu The `Menu` object the menu item is associated with.
-     * @return MenuItem a new MenuItem instance
+     * @return static a new MenuItem instance
      */
     public static function build($data, ?Menu $menu = null): static
     {
@@ -119,18 +280,20 @@ class MenuItem extends CoreEntity implements Stringable
          *
          * @since 2.0.0
          */
-        protected ?WP_Post $wp_object, /**
-     * Timber Menu. Previously this was a public property, but converted to a method to avoid
-     * recursion (see #2071).
-     *
-     * @since 1.12.0
-     * @see \Timber\MenuItem::menu()
-     */
+        protected ?WP_Post $wp_object,
+        /**
+         * Timber Menu. Previously this was a public property, but converted to a method to avoid
+         * recursion (see #2071).
+         *
+         * @since 1.12.0
+         * @see \Timber\MenuItem::menu()
+         */
         protected $menu = null
     ) {
         /**
          * @property string $title The nav menu item title.
          */
+        // @phpstan-ignore property.notFound
         $this->title = $this->wp_object->title;
 
         $this->import($this->wp_object);

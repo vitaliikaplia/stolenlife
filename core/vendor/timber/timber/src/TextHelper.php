@@ -43,6 +43,10 @@ class TextHelper
      */
     public static function trim_words($text, $num_words = 55, $more = null, $allowed_tags = 'p a span b i br blockquote')
     {
+        if (empty($text)) {
+            return '';
+        }
+
         if (null === $more) {
             $more = \__('&hellip;');
         }

@@ -458,7 +458,7 @@ class Helper
 
         // phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
         // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-        \trigger_error('[ Timber ] ' . $error_message);
+        \trigger_error('[ Timber ] ' . $error_message, \E_USER_DEPRECATED);
     }
 
     /**
@@ -515,7 +515,7 @@ class Helper
         if (!\is_array($arr)) {
             return false;
         }
-        return (bool) \count(\array_filter(\array_keys($arr), 'is_string'));
+        return (bool) \count(\array_filter(\array_keys($arr), is_string(...)));
     }
 
     /**
